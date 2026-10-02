@@ -14,6 +14,6 @@
         std::chrono::duration<double> elapsed = endTime - startTime;
         return elapsed.count();
     }
-    long long StopWatch::getElapsedTimeNs() {
+    unsigned long long StopWatch::getElapsedTimeNs() {
         return std::chrono::duration_cast<std::chrono::nanoseconds>(endTime - startTime).count();
     }

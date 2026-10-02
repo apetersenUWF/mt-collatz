@@ -6,5 +6,5 @@ class StopWatch {
         void start();//start timing
         void stop();//stop timing
         double getElapsedTime();//gets the difference between start time and stop time in seconds
-        long long getElapsedTimeNs()//gets the difference between start time and stop time in nanoseconds
+        unsigned long long getElapsedTimeNs()//gets the difference between start time and stop time in nanoseconds
 };
