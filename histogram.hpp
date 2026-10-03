@@ -7,14 +7,10 @@ private:
   unsigned long long N; //The number of collatz sequences to be computed
   int T; //The number of threads used for computing
   int k; //The upper limit for stopping times that the histogram will track, dictated by project 2 requirements
-  double s; //The time in seconds taken to compute the collatz sequences
-  unsigned long long ns; //The time in nanoseconds taken to compute the collatz sequences
   int* frequencies; //The array storing the frequencies of each stopping time
 public:
-  Histogram(std::string& filename, unsigned long long N, int T, int k = 1000); //Default k = 1000, dictated by project requirements
+  Histogram(std::string filename, unsigned long long N, int T, int k = 1000); //Default k = 1000, dictated by project requirements
   ~Histogram();
-  void setSeconds(double t); //Assign the amount of time it took to compute
-  void setNanoseconds(unsigned long long t);
   void print() const; //Print frequencies to stdout in the format:
                 //0,frequency_of_stopping_time(0)
                 //1,frequency_of_stopping_time(1)

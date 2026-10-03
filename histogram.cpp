@@ -1,7 +1,8 @@
 #include "histogram.hpp"
 #include <iostream>
+#include <fstream>
 
-Histogram::Histogram(std::string& filename, int N, int T, int k) {
+Histogram::Histogram(std::string filename, unsigned long long N, int T, int k) {
   this->filename = filename;
   this->N = N;
   this->T = T;
@@ -16,23 +17,23 @@ Histogram::~Histogram() {
 }
 
 
-void Histogram::setSeconds(const double t) {
-  s = t;
-}
-
-
-void Histogram::setNanoseconds(const unsigned long long t) {
-  ns = t;
-}
-
-
 void Histogram::print() const{
   for (int i = 0; i < k + 1; i++) std::cout << i << "," << frequencies[i] << std::endl;
 }
 
 
 void Histogram::generateCSV() const{
-  //finish this
+  if (!filename.empty() && k > 0) {
+      std::ofstream oFS(filename);
+      if (oFS.is_open()) {
+        oFS << "Stopping Times for N = " << N << " and T = " << T << ",";
+        oFS << "Frequency" << std::endl;
+        for (int i = 0; i < k + 1; i++) {
+          oFS << i << "," << frequencies[i] << std::endl;
+        }
+        oFS.close();
+      }
+  }
 }
 
 
