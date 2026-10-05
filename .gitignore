@@ -1,3 +1,5 @@
-.csv
-.txt
-.o
+*.csv
+*.txt
+*.o
+
+mt-collatz
