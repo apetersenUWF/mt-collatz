@@ -13,7 +13,7 @@ run: $(INCLUDE) $(DRIVER)
 	$(CXX) $(CXXFLAGS) -o $(EXEC) $(INCLUDE) $(DRIVER)
 
 clean:
-	rm -f $(EXEC) $(INCLUDE) $(SHELLDRIVER)
+	rm -f $(EXEC) $(INCLUDE) $(DRIVER)
 
 # Object targets
 stopwatch.o:
