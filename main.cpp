@@ -1,3 +1,11 @@
+/**
+* main.cpp
+*
+* Ayden Petersen
+* Jackson Puls
+* Project 2 - mt-collatz
+* 
+*/
 #include "mt-collatz.hpp"
 #include "histogram.hpp"
 #include "stopwatch.hpp"
@@ -28,7 +36,7 @@ int main(int argc, char** argv) {
         Histogram h; //make histogram on each run so times are fair
         StopWatch s;
         s.start();
-        start_collatz(N, T, h);
+        start_collatz(N, T, &h);
         s.stop();
         time += s.getElapsedTimeNs();
         if (j == i - 1) h.print();

@@ -1,3 +1,11 @@
+/**
+* mt-collatz.hpp
+*
+* Ayden Petersen
+* Jackson Puls
+* Project 2 - mt-collatz
+* 
+*/
 #pragma once
 
 #include <mutex>

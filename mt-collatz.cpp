@@ -1,3 +1,11 @@
+/**
+* mt-collatz.cpp
+*
+* Ayden Petersen
+* Jackson Puls
+* Project 2 - mt-collatz
+* 
+*/
 #include <vector>
 #include <thread>
 #include <iostream>
@@ -16,7 +24,7 @@ int calc_collatz_stoptime(unsigned long long n) {
     return stoptime;
 }
 
-void thread_worker(unsigned long long N, Histogram* h) {
+void thread_worker(unsigned long long N, Histogram h) {
     while (true) {
         if (!NO_LOCK) mutex.lock();
 
