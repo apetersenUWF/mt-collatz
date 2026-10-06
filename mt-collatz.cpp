@@ -24,7 +24,7 @@ int calc_collatz_stoptime(unsigned long long n) {
     return stoptime;
 }
 
-void thread_worker(unsigned long long N, Histogram h) {
+void thread_worker(unsigned long long N, Histogram* h) {
     while (true) {
         if (!NO_LOCK) mutex.lock();
 
@@ -44,9 +44,15 @@ void thread_worker(unsigned long long N, Histogram h) {
 
 void start_collatz(unsigned long long N, unsigned int T, Histogram* h) {
 
-    std::vector<std::jthread> threads; // jthreads will join when the thread is out of scope automatically
+    COUNTER = 1;
+    
+    std::vector<std::thread> threads; // jthreads will join when the thread is out of scope automatically
 
     for (unsigned int i = 0; i < T; i++) {
         threads.emplace_back(thread_worker, N, h);
+    }
+
+    for (unsigned int i = 0; i < T; i++) {
+        threads.at(i).join();
     }
 }

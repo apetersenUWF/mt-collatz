@@ -1,5 +1,5 @@
 CXX = g++
-CXXFLAGS = -std=c++20 -Wall -g
+CXXFLAGS = -std=c++2a -Wall -g -pthread
 
 # Object file names
 DRIVER = main.o
