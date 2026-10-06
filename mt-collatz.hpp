@@ -8,7 +8,7 @@ inline unsigned long long COUNTER = 1;
 inline bool NO_LOCK = false;
 inline std::mutex mutex;
 
-int calc_collatz_stoptime(int n);
+int calc_collatz_stoptime(unsigned long long n);
 
 void thread_worker(unsigned long long N, Histogram* h);
 

@@ -3,7 +3,7 @@ CXXFLAGS = -std=c++20 -Wall -g
 
 # Object file names
 DRIVER = main.o
-INCLUDE = stopwatch.o histogram.o mt-collatz.o
+INCLUDE = stopwatch.o histogram.o mt-collatz.o parse.o
 
 # Executable file names
 EXEC = mt-collatz
@@ -27,3 +27,6 @@ histogram.o:
 
 mt-collatz.o:
 	$(CXX) $(CXXFLAGS) -c mt-collatz.cpp -o mt-collatz.o
+
+parse.o:
+	$(CXX) $(CXXFLAGS) -c parse.cpp -o parse.o

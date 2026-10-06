@@ -1,19 +1,24 @@
-//simple stopwatch to time programs
-//call start() to start timing
-//call stop() to stop timing
-//time difference can be output in either seconds (double) or nanoseconds (long long)
+/**
+* stopwatch.cpp
+*
+* Ayden Petersen
+* Jackson Puls
+*
+*/
 #include "stopwatch.hpp"
-StopWatch::StopWatch(): startTime(), endTime() {}
-void StopWatch::start() {
+
+StopWatch::StopWatch(): startTime(), endTime() {} //Default constructor, start with empty start and end times
+
+void StopWatch::start() { //Begin timing, record startTime using system clock
     startTime = std::chrono::high_resolution_clock::now();
 }
-void StopWatch::stop() {
+void StopWatch::stop() { //Stop timing, record endTime using system clock
     endTime = std::chrono::high_resolution_clock::now();
 }
-double StopWatch::getElapsedTime() {
+double StopWatch::getElapsedTime() { //Return elapsed time in seconds
     std::chrono::duration<double> elapsed = endTime - startTime;
     return elapsed.count();
 }
-unsigned long long StopWatch::getElapsedTimeNs() {
+unsigned long long StopWatch::getElapsedTimeNs() { //Return elapsed time in nanoseconds
     return std::chrono::duration_cast<std::chrono::nanoseconds>(endTime - startTime).count();
 }

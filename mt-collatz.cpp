@@ -4,7 +4,7 @@
 
 #include "mt-collatz.hpp"
 
-int calc_collatz_stoptime(int n) {
+int calc_collatz_stoptime(unsigned long long n) {
     int stoptime = 0;
 
     while (n > 1) {

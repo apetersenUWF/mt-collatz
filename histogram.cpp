@@ -1,3 +1,11 @@
+/**
+* histogram.cpp
+*
+* Ayden Petersen
+* Jackson Puls
+*
+*/
+
 #include "histogram.hpp"
 #include <iostream>
 #include <fstream>
@@ -10,16 +18,16 @@ Histogram::Histogram(int k) {
 
 
 Histogram::~Histogram() {
-    delete[] frequencies;
+    delete[] frequencies; //deallocate frequencies
 }
 
 
 void Histogram::print() const{
-    if (k > 0) {
+    if (k > 0) { //k must be > 0 for the next loop to run
         for (int i = 0; i < k + 1; i++) {
-            std::cout << i << "," << frequencies[i] << std::endl;
+            std::cout << i << "," << frequencies[i] << std::endl; // i,frequencies[i]
+        }
     }
-  }
 }
 
 
