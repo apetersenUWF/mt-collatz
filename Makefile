@@ -1,9 +1,9 @@
 CXX = g++
-CXXFLAGS = -std=c++17 -Wall -g
+CXXFLAGS = -std=c++20 -Wall -g
 
 # Object file names
-DRIVER = mt-collatz.o
-INCLUDE = stopwatch.o histogram.o
+DRIVER = main.o
+INCLUDE = stopwatch.o histogram.o mt-collatz.o
 
 # Executable file names
 EXEC = mt-collatz
@@ -16,6 +16,9 @@ clean:
 	rm -f $(EXEC) $(INCLUDE) $(DRIVER)
 
 # Object targets
+main.o:
+	$(CXX) $(CXXFLAGS) -c main.cpp -o main.o
+
 stopwatch.o:
 	$(CXX) $(CXXFLAGS) -c stopwatch.cpp -o stopwatch.o
 
