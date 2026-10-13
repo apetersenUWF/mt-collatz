@@ -14,8 +14,9 @@
 #include <cctype>
 #include <cstdlib>
 #include <stdexcept>
+#include <cstdint> // I added this because it was starting to look really ugly
 /*
-* A function that parses a string and returns an unsigned long long within the range 1 to maxVal
+* A function that parses a string and returns an uint64_t within the range 1 to maxVal
 * Upon success returns the value
 *     * Only suceeds when there is no leading characters and no trailing characters
 * Upon failure prints the name and error to stderr
@@ -26,7 +27,7 @@
 * Usage: To parse the first input as a number N in the range 1 - 10000
 *     * int N = parsePositive(argv[1], "n", 10000);
 */
-unsigned long long parsePositive(const std::string& arg, const std::string& name, unsigned long long maxVal);
+uint64_t parsePositive(const std::string& arg, const std::string& name, uint64_t maxVal);
 
 /*
 * A function that parses optional arguments -nolock and i
@@ -38,6 +39,6 @@ unsigned long long parsePositive(const std::string& arg, const std::string& name
 *     * OR if i preceeds -nolock
 * @param int argc The same as the argc from main
 * @param char** argv The same argv from main
-* Usage: unsigned int i = parseOptionalArgs(argc, argv);
+* Usage: uint32_t i = parseOptionalArgs(argc, argv);
 */
-unsigned int parseOptionalArgs(int argc, char** argv);
+uint32_t parseOptionalArgs(int argc, char** argv);

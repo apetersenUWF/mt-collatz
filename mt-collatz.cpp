@@ -6,53 +6,103 @@
 * Project 2 - mt-collatz
 * 
 */
-#include <vector>
 #include <thread>
-#include <iostream>
+#include <atomic>
 
 #include "mt-collatz.hpp"
 
-int calc_collatz_stoptime(unsigned long long n) {
-    int stoptime = 0;
+std::atomic<uint64_t> COUNTER(1); // Shared counter the threads will pull from. It's atomic to prevent race conditions. From my testing it's as accurate and incredibly fast compared to std::mutex.
+#define MAX_CHUNK_SIZE 10000 // Each thread will pull at most MAX_CHUNK_SIZE from COUNTER, which will reduce the amount of thrashing that occurs in the cache when multiple threads are reading and modifying COUNTER.
 
-    while (n > 1) {
-        if (n % 2 == 0) n /= 2;
-        else n = 3 * n + 1;
+// This array is used by calc_collatz_stoptime to cache previously calculated stop times, since a lot of numbers will repeat the same paths. This speeds up the program a crap ton.
+// Accesses are at i-1 since numbers 1 through N will be calculated, while the the array will go from 0 through N-1.
+uint64_t* collatz_cache;
+
+uint64_t calc_collatz_stoptime(uint64_t n) {
+    uint64_t stoptime = 0;
+    uint64_t i = n; // Creates a copy to work on so that the original number is still accessible.
+
+    while (i > 1) {
+        // The actual Collatz sequence.
+        if (i % 2 == 0) i /= 2;
+        else i = 3 * i + 1;
         stoptime++;
+
+        // Skips checking cache if i > n since it's not likely to have anything above n, plus this prevents out of bounds reads/writes.
+        if (i <= n) {
+            // If there's a value cached for the current i, add it and break out of the loop.
+            uint64_t cached_stoptime = collatz_cache[i-1];
+            if (cached_stoptime != 0) {
+                stoptime += cached_stoptime;
+                break;
+            }
+        }
+    }
+
+    // If the value at collatz_cache[n-1] is zero, then assign stoptime to it.
+    if (collatz_cache[n-1] == 0) {
+        collatz_cache[n-1] = stoptime;
     }
 
     return stoptime;
 }
 
-void thread_worker(unsigned long long N, Histogram* h) {
+void thread_worker(uint64_t N, uint64_t chunk_size, uint64_t* h) {
+    uint64_t local_counter; // This is used along with chunk_size to reduce simultaneous reads and writes to COUNTER by different threads.
+
     while (true) {
-        if (!NO_LOCK) mutex.lock();
+        if (COUNTER > N) return; // Check to prevent any further calculations past N.
 
-        if (COUNTER > N) {
-            if (!NO_LOCK) mutex.unlock();
-            break;
+        local_counter = COUNTER.fetch_add(chunk_size, std::memory_order_acq_rel); // Grabs current value stored in COUNTER, then adds chunk_size.
+
+        // Iterates over local_counter up to local_counter + chunk_size, and breaks if the counter goes over N, then adds the stop time to the thread's local histogram.
+        for (uint64_t i = local_counter; i < (local_counter + chunk_size) && i <= N; i++) {
+            uint64_t stopping_time = calc_collatz_stoptime(i);
+            h[stopping_time]++;
         }
-
-        int stoptime = calc_collatz_stoptime(COUNTER);
-        COUNTER++;
- 
-        h->updateFrequency(stoptime);
-        if (!NO_LOCK) mutex.unlock();
     }
-
 }
 
-void start_collatz(unsigned long long N, unsigned int T, Histogram* h) {
-
-    COUNTER = 1;
+void start_collatz(uint64_t N, uint8_t T, Histogram* h) {
+    COUNTER = 1; // Always reset since this function could be called multiple times.
     
-    std::vector<std::thread> threads; // jthreads will join when the thread is out of scope automatically
+    std::thread threads[T]{};
+    uint64_t chunk_size;
 
-    for (unsigned int i = 0; i < T; i++) {
-        threads.emplace_back(thread_worker, N, h);
+    // Essentially tries to make the chunk_size evenly split N amongst the threads, unless if it's greater than MAX_CHUNK_SIZE, which it will just cap to that.
+    // If N is less than T, then the chunk_size will just default to N.
+    if ((N / T) <= 0) {
+        chunk_size = N;
+    }
+    else if ((N / T) > MAX_CHUNK_SIZE) {
+        chunk_size = MAX_CHUNK_SIZE;
+    }
+    else {
+        chunk_size = N / T;
     }
 
-    for (unsigned int i = 0; i < T; i++) {
-        threads.at(i).join();
+    // Creates a dynamic array with size N for the cache.
+    collatz_cache = new uint64_t[N]{0};
+    
+    // initializer lists cannot be used on VLA's for some reason :(
+    // ie. uint64_t local_histograms[T][K+1]{0};
+    uint64_t* local_histograms[T]; // This is used to remove the need to synchronize accesses to the main histogram, as each thread gets its own array and no other array will compete for access. Later these are combined into the main histogram.
+    
+    // Starts each thread and assigns them a histogram.
+    for (uint8_t i = 0; i < T; i++) {
+        local_histograms[i] = new uint64_t[K+1]{0};
+        threads[i] = std::thread(thread_worker, N, chunk_size, local_histograms[i]);
     }
+
+    // Joins the threads and combines each of their histograms.
+    for (uint8_t i = 0; i < T; i++) {
+        threads[i].join();
+
+        for (uint32_t j = 0; j < K+1; j++) {
+            h->updateFrequency(j, local_histograms[i][j]);
+        }
+    }
+
+    delete[] collatz_cache;
+    collatz_cache = nullptr;
 }

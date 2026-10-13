@@ -24,24 +24,28 @@ int main(int argc, char** argv) {
         return 1;
     }
     //non-optional arguments <N, T>
-    unsigned long long N = parsePositive(argv[1], "N", ULLONG_MAX);
-    unsigned int T = static_cast<unsigned int>(parsePositive(argv[2], "T", UINT_MAX));
+    uint64_t N = parsePositive(argv[1], "N", ULLONG_MAX);
+    uint8_t T = static_cast<uint8_t>(parsePositive(argv[2], "T", UINT8_MAX));
 
     //optional arguments <-nolock i>
-    unsigned int i = parseOptionalArgs(argc, argv); //passively sets NO_LOCK as well
+    uint32_t i = parseOptionalArgs(argc, argv); //passively sets NO_LOCK as well
 
-    unsigned long long time = 0;
+    uint64_t time = 0;
 
-    for (unsigned int j = 0; j < i; j++) {
+    for (uint32_t j = 0; j < i; j++) {
         Histogram h; //make histogram on each run so times are fair
         StopWatch s;
+
         s.start();
         start_collatz(N, T, &h);
         s.stop();
+
         time += s.getElapsedTimeNs();
-        if (j == i - 1) h.print();
+
+        if (j == i - 1) h.print(); // Print on last (doesn't affect the results, just keeps the output less cluttered)
     }
+
     time/=i;
-    cout << "average time = " << time << " ns" << endl;
+    cerr << N << "," << (int)T << "," << time << endl; // Output time to std::cerr
     return 0;
 }

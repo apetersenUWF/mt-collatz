@@ -11,13 +11,13 @@
 #include "mt-collatz.hpp" //for NO_LOCK
 using namespace std;
 
-unsigned long long parsePositive(const string& arg, const string& name, unsigned long long maxVal) {
+uint64_t parsePositive(const string& arg, const string& name, uint64_t maxVal) {
     try {
         if (arg.empty() || !isdigit(arg[0])) //if the argument is empty or begins with a char that is not a digit
             throw invalid_argument(name);
 
         size_t pos; //holds the index of the first nonconverted character from stoull
-        unsigned long long value = stoull(arg, &pos); //string to unsigned long long
+        uint64_t value = stoull(arg, &pos); //string to uint64_t
 
         if (pos != arg.size()) throw invalid_argument(name); //if pos usnt the last index of the string, must be trailing junk ex : "1000p"
         if (value == 0 || value > maxVal) throw out_of_range(name); //values of 0 arent allowed for any of our inputs so this is safe, also handles the different integer limits
@@ -32,8 +32,8 @@ unsigned long long parsePositive(const string& arg, const string& name, unsigned
     exit(1);
 }
 
-unsigned int parseOptionalArgs(int argc, char** argv) {
-    unsigned int i = 1; // number of times to run the program, default is 1
+uint32_t parseOptionalArgs(int argc, char** argv) {
+    uint32_t i = 1; // number of times to run the program, default is 1
     int j = 3; //indicates the position the first optional argument should be in from argv
 
     // -nolock should be arg3
@@ -43,7 +43,7 @@ unsigned int parseOptionalArgs(int argc, char** argv) {
     }
     // i is arg3 if -nolock was omitted, else arg4
     if (argc > j) { //if there are more arguments
-        i = static_cast<unsigned int>(parsePositive(argv[j], "i", UINT_MAX)); //attempt to parse the next argument as i
+        i = static_cast<uint32_t>(parsePositive(argv[j], "i", UINT_MAX)); //attempt to parse the next argument as i
         j++; //increment the argument index
     }
     // anything left over: too many args, or -nolock placed after i
