@@ -16,7 +16,7 @@ std::atomic<uint64_t> COUNTER(1); // Shared counter the threads will pull from. 
 
 // This array is used by calc_collatz_stoptime to cache previously calculated stop times, since a lot of numbers will repeat the same paths. This speeds up the program a crap ton.
 // Accesses are at i-1 since numbers 1 through N will be calculated, while the the array will go from 0 through N-1.
-uint64_t* collatz_cache;
+uint16_t* collatz_cache;
 
 uint64_t calc_collatz_stoptime(uint64_t n) {
     uint64_t stoptime = 0;
@@ -58,7 +58,7 @@ void thread_worker(uint64_t N, uint64_t chunk_size, uint64_t* h) {
         // Iterates over local_counter up to local_counter + chunk_size, and breaks if the counter goes over N, then adds the stop time to the thread's local histogram.
         for (uint64_t i = local_counter; i < (local_counter + chunk_size) && i <= N; i++) {
             uint64_t stopping_time = calc_collatz_stoptime(i);
-            h[stopping_time]++;
+            if (stopping_time <= K) h[stopping_time]++; //check if stopping time is less than K to protect memory for large N
         }
     }
 }
@@ -82,7 +82,7 @@ void start_collatz(uint64_t N, uint8_t T, Histogram* h) {
     }
 
     // Creates a dynamic array with size N for the cache.
-    collatz_cache = new uint64_t[N]{0};
+    collatz_cache = new uint16_t[N]{0};
     
     // initializer lists cannot be used on VLA's for some reason :(
     // ie. uint64_t local_histograms[T][K+1]{0};
@@ -101,6 +101,7 @@ void start_collatz(uint64_t N, uint8_t T, Histogram* h) {
         for (uint32_t j = 0; j < K+1; j++) {
             h->updateFrequency(j, local_histograms[i][j]);
         }
+        delete[] local_histograms[i]; //Delete local histogram after merging
     }
 
     delete[] collatz_cache;
