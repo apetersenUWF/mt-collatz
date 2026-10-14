@@ -9,7 +9,6 @@
 
 #include "histogram.hpp"
 #include <iostream>
-#include <fstream>
 
 Histogram::Histogram(uint32_t k) {
     this->k = k;

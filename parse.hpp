@@ -30,13 +30,12 @@
 uint64_t parsePositive(const std::string& arg, const std::string& name, uint64_t maxVal);
 
 /*
-* A function that parses optional arguments -nolock and i
-* Upon success sets the value of NO_LOCK and returns i
-*     * For success -nolock must preceed i and no trailing arguments
+* A function that parses optional argument i
+* Upon success returns i
+*     * For success i should be arg3 with no trailing arguments
 *     * if i was omitted, returns 1 to run the program once by default
 * Upon failure prints the invalid argument to stderr and exits
-*     * Fails if it encounters an argument that is not -nolock or i
-*     * OR if i preceeds -nolock
+*     * Fails if it encounters an argument that is not i
 * @param int argc The same as the argc from main
 * @param char** argv The same argv from main
 * Usage: uint32_t i = parseOptionalArgs(argc, argv);

@@ -36,20 +36,15 @@ uint32_t parseOptionalArgs(int argc, char** argv) {
     uint32_t i = 1; // number of times to run the program, default is 1
     int j = 3; //indicates the position the first optional argument should be in from argv
 
-    // -nolock should be arg3
-    if (argc > j && strcmp(argv[j], "-nolock") == 0) { //if there are more arguments and the next argument is -nolock
-        NO_LOCK = true; //set nolock to be true
-        j++; //increment the argument index
-    }
-    // i is arg3 if -nolock was omitted, else arg4
+    // i should be arg3 
     if (argc > j) { //if there are more arguments
         i = static_cast<uint32_t>(parsePositive(argv[j], "i", UINT_MAX)); //attempt to parse the next argument as i
         j++; //increment the argument index
     }
-    // anything left over: too many args, or -nolock placed after i
+    // anything left over: too many args
     if (argc > j) { //if there are more arguments
         cerr << "Invalid argument: " << argv[j] << endl; //print leftover arguments to stderr
         exit(1);
     }
-    return i; //return the value for i, nolock was set passively
+    return i; //return the value for i
 }
