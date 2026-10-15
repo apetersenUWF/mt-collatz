@@ -45,8 +45,7 @@ int main(int argc, char** argv) {
     cerr << "Times: " << endl;
 
     for (uint32_t j = 0; j < i; j++) { //prints times for each run
-        cerr << times[j];
-        if (j < i - 1) cerr << ",";
+        cerr << times[j] >> endl;
         avgTime += times[j];
     }
     cerr << endl;

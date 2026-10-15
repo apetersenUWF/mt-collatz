@@ -8,7 +8,7 @@
 */
 
 #include "parse.hpp"
-#include "mt-collatz.hpp" //for NO_LOCK
+#include "mt-collatz.hpp"
 using namespace std;
 
 uint64_t parsePositive(const string& arg, const string& name, uint64_t maxVal) {
