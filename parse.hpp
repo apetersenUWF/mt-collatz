@@ -30,10 +30,12 @@
 uint64_t parsePositive(const std::string& arg, const std::string& name, uint64_t maxVal);
 
 /*
-* A function that parses optional argument i
+* A function that parses optional arguments i and -nocache
 * Upon success returns i
-*     * For success i should be arg3 with no trailing arguments
+*     * For success i should be arg3 and -nocache should be arg4 with no trailing arguments
 *     * if i was omitted, returns 1 to run the program once by default
+*     * if -nocache was omitted, the cache stays enabled by default
+*     * -nocache is set passively, so it has no effect on the output of this function
 * Upon failure prints the invalid argument to stderr and exits
 *     * Fails if it encounters an argument that is not i
 * @param int argc The same as the argc from main

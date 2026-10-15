@@ -11,6 +11,9 @@
 #include "histogram.hpp"
 #include <atomic>
 
+// A global boolean to enable or disable the cache used in calculating the Collatz sequence. Cache is enable by default as it speeds up the algorithm a lot, but at the cost of RAM at very large N values.
+inline bool NO_CACHE = false;
+
 //A struct used to hold the results of the Collatz sequence so it can all be returned from start_collatz
 struct CollatzResults {
     uint64_t time; //An integer representing the runtime in nanoseconds
@@ -23,6 +26,7 @@ class MT_COLLATZ {
         uint64_t N; //An integer representing the number of stopping times to be computed
         uint8_t T; //An integer representing the number of threads to use
         uint64_t chunk_size; //An integer representing the number of stoptimes handed to each thread to compute in one chunk, computed automatically based on MAX_CHUNK_SIZE T and N
+        bool no_cache; // A boolean that enables or disables the cache
 
         std::atomic<uint64_t> COUNTER{1}; // Shared counter the threads will pull from. It's atomic to prevent race conditions. From my testing it's as accurate and incredibly fast compared to std::mutex.
         

@@ -26,14 +26,17 @@ MT_COLLATZ::MT_COLLATZ(uint64_t N, uint8_t T): N(N), T(T) {
     else {
         chunk_size = N / T;
     }
+
+    no_cache = NO_CACHE;
+
     // This array is used by calc_collatz_stoptime to cache previously calculated stop times, since a lot of numbers will repeat the same paths. This speeds up the program a crap ton.
     // Accesses are at i-1 since numbers 1 through N will be calculated, while the the array will go from 0 through N-1.
-    collatz_cache = new uint16_t[N]{0}; 
+    if (!no_cache) collatz_cache = new uint16_t[N]{0}; 
 }
 
 MT_COLLATZ::~MT_COLLATZ() {
-    delete[] collatz_cache;
-    collatz_cache = nullptr;
+    if (!no_cache) delete[] collatz_cache;
+    if (!no_cache) collatz_cache = nullptr;
 }
 
 uint64_t MT_COLLATZ::calcCollatzStoptime(uint64_t n) {
@@ -46,6 +49,8 @@ uint64_t MT_COLLATZ::calcCollatzStoptime(uint64_t n) {
         else i = 3 * i + 1;
         stoptime++;
 
+        if (no_cache) continue;
+
         // Skips checking cache if i > n since it's not likely to have anything above n, plus this prevents out of bounds reads/writes.
         if (i <= n) {
             // If there's a value cached for the current i, add it and break out of the loop.
@@ -56,7 +61,9 @@ uint64_t MT_COLLATZ::calcCollatzStoptime(uint64_t n) {
             }
         }
     }
-
+    
+    if (no_cache) return stoptime;
+    
     // If the value at collatz_cache[n-1] is zero, then assign stoptime to it.
     if (collatz_cache[n-1] == 0) {
         collatz_cache[n-1] = stoptime;

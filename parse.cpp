@@ -37,8 +37,13 @@ uint32_t parseOptionalArgs(int argc, char** argv) {
     int j = 3; //indicates the position the first optional argument should be in from argv
 
     // i should be arg3 
-    if (argc > j) { //if there are more arguments
+    if (argc > j && strcmp(argv[j], "-nocache") != 0) { //if there are more arguments
         i = static_cast<uint32_t>(parsePositive(argv[j], "i", UINT_MAX)); //attempt to parse the next argument as i
+        j++; //increment the argument index
+    }
+    // -nocache should be arg4
+    if (argc > j && strcmp(argv[j], "-nocache") == 0) { //if there are more arguments and the next argument is -nocache
+        NO_CACHE = true; //set nocache to be true
         j++; //increment the argument index
     }
     // anything left over: too many args
